@@ -28,6 +28,8 @@ pub enum Error {
     FileEntry(io::Error),
     #[error(display = "error parsing loader conf at {:?}: {}", path, why)]
     Loader { path: PathBuf, why: LoaderError },
+    #[error(display = "error writing loader file: {}", _0)]
+    LoaderWrite(io::Error),
     #[error(display = "entry not found in data structure")]
     NotFound
 }
@@ -120,8 +122,8 @@ impl SystemdBootConf {
     }
 
     /// Overwrite the conf file with stored values.
-    pub fn overwrite_loader_conf(&self) -> io::Result<()> {
-        Self::try_io(&self.loader_path, |file| {
+    pub fn overwrite_loader_conf(&self) -> Result<(), Error> {
+        let result = Self::try_io(&self.loader_path, |file| {
             if let Some(ref default) = self.loader_conf.default {
                 writeln!(file, "default {}", default)?;
             }
@@ -131,7 +133,9 @@ impl SystemdBootConf {
             }
 
             Ok(())
-        })
+        });
+
+        result.map_err(Error::LoaderWrite)
     }
 
     /// Overwrite the entry conf for the given entry.
