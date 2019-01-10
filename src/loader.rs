@@ -28,13 +28,16 @@ impl LoaderConf {
     pub fn from_path<P: AsRef<Path>>(path: P) -> Result<Self, LoaderError> {
         let path = path.as_ref();
 
+        let mut loader = LoaderConf::default();
+        if !path.exists() {
+            return Ok(loader);
+        }
+
         if !path.is_file() {
             return Err(LoaderError::NotAFile);
         }
 
         let file = File::open(path).map_err(LoaderError::Open)?;
-
-        let mut loader = LoaderConf::default();
 
         for line in BufReader::new(file).lines() {
             let line = line.map_err(LoaderError::Line)?;
