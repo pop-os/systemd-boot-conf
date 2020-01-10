@@ -4,23 +4,23 @@ use std::path::Path;
 
 #[derive(Debug, Error)]
 pub enum LoaderError {
-    #[error(display = "error reading line in loader conf: {}", _0)]
-    Line(io::Error),
-    #[error(display = "loader conf is not a file")]
+    #[error("error reading line in loader conf")]
+    Line(#[source] io::Error),
+    #[error("loader conf is not a file")]
     NotAFile,
-    #[error(display = "default was defined without a value")]
+    #[error("default was defined without a value")]
     NoValueForDefault,
-    #[error(display = "timeout was defined without a value")]
+    #[error("timeout was defined without a value")]
     NoValueForTimeout,
-    #[error(display = "error opening loader file: {}", _0)]
-    Open(io::Error),
-    #[error(display = "timeout was defined with a value ({}) which is not a number", _0)]
-    TimeoutNaN(String)
+    #[error("error opening loader file")]
+    Open(#[source] io::Error),
+    #[error("timeout was defined with a value ({}) which is not a number", _0)]
+    TimeoutNaN(String),
 }
 
 #[derive(Debug, Default, Clone)]
 pub struct LoaderConf {
-    pub default: Option<String>,
+    pub default: Option<Box<str>>,
     pub timeout: Option<u32>,
 }
 
@@ -45,17 +45,19 @@ impl LoaderConf {
             match fields.next() {
                 Some("default") => match fields.next() {
                     Some(default) => loader.default = Some(default.into()),
-                    None => return Err(LoaderError::NoValueForDefault)
-                }
+                    None => return Err(LoaderError::NoValueForDefault),
+                },
                 Some("timeout") => match fields.next() {
-                    Some(timeout) => if let Ok(timeout) = timeout.parse::<u32>() {
-                        loader.timeout = Some(timeout);
-                    } else {
-                        return Err(LoaderError::TimeoutNaN(timeout.into()));
+                    Some(timeout) => {
+                        if let Ok(timeout) = timeout.parse::<u32>() {
+                            loader.timeout = Some(timeout);
+                        } else {
+                            return Err(LoaderError::TimeoutNaN(timeout.into()));
+                        }
                     }
-                    None => return Err(LoaderError::NoValueForTimeout)
-                }
-                _ => ()
+                    None => return Err(LoaderError::NoValueForTimeout),
+                },
+                _ => (),
             }
         }
 

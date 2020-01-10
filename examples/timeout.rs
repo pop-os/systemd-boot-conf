@@ -1,7 +1,7 @@
 extern crate systemd_boot_conf;
 
-use systemd_boot_conf::SystemdBootConf;
 use std::process::exit;
+use systemd_boot_conf::SystemdBootConf;
 
 pub fn main() {
     let mut manager = match SystemdBootConf::new("/boot/efi") {
@@ -26,7 +26,6 @@ pub fn main() {
 
     println!(
         "loader:\n  default: {:?}\n  timeout: {:?}",
-        manager.loader_conf.default,
-        manager.loader_conf.timeout
+        manager.loader_conf.default, manager.loader_conf.timeout
     );
 }
