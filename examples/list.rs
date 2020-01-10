@@ -19,8 +19,8 @@ pub fn main() {
 
     for entry in manager.entries {
         println!(
-            "  entry: {}\n    title: {}\n    linux: {}\n    initrd: {:?}\n    options: {:?}",
-            entry.filename, entry.title, entry.linux, entry.initrd, entry.options
+            "  id: {}\n    title: {}\n    linux: {}\n    initrd: {:?}\n    options: {:?}",
+            entry.id, entry.title, entry.linux, entry.initrd, entry.options
         );
     }
 }

@@ -90,19 +90,17 @@ impl SystemdBootConf {
 
     /// Validates that an entry exists with this name.
     pub fn entry_exists(&self, entry: &str) -> bool {
-        self.entries.iter().any(|e| e.filename.as_ref() == entry)
+        self.entries.iter().any(|e| e.id.as_ref() == entry)
     }
 
     /// Get the entry that corresponds to the given name.
     pub fn get(&self, entry: &str) -> Option<&Entry> {
-        self.entries.iter().find(|e| e.filename.as_ref() == entry)
+        self.entries.iter().find(|e| e.id.as_ref() == entry)
     }
 
     /// Get a mutable entry that corresponds to the given name.
     pub fn get_mut(&mut self, entry: &str) -> Option<&mut Entry> {
-        self.entries
-            .iter_mut()
-            .find(|e| e.filename.as_ref() == entry)
+        self.entries.iter_mut().find(|e| e.id.as_ref() == entry)
     }
 
     /// Attempt to re-read the loader configuration.
@@ -176,7 +174,7 @@ impl SystemdBootConf {
         };
 
         let result = Self::try_io(
-            &self.entries_path.join(format!("{}.conf", entry.filename)),
+            &self.entries_path.join(format!("{}.conf", entry.id)),
             move |file| {
                 writeln!(file, "title {}", entry.title)?;
                 writeln!(file, "linux {}", entry.linux)?;

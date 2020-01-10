@@ -27,7 +27,7 @@ pub enum EntryError {
 
 #[derive(Debug, Default, Clone)]
 pub struct Entry {
-    pub filename: Box<str>,
+    pub id: Box<str>,
     pub initrd: Option<Box<str>>,
     pub linux: Box<str>,
     pub options: Vec<Box<str>>,
@@ -53,7 +53,7 @@ impl Entry {
         let file = File::open(path).map_err(EntryError::Open)?;
 
         let mut entry = Entry::default();
-        entry.filename = file_name.into();
+        entry.id = file_name.into();
 
         for line in BufReader::new(file).lines() {
             let line = line.map_err(EntryError::Line)?;
