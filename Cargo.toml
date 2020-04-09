@@ -1,6 +1,6 @@
 [package]
 name = "systemd-boot-conf"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Michael Aaron Murphy <mmstickman@gmail.com>"]
 repository = "https://github.com/pop-os/systemd-boot-conf"
 description = "Managing the systemd-boot loader configuration"
@@ -11,6 +11,6 @@ categories = ["os::unix-apis"]
 edition = "2018"
 
 [dependencies]
-itertools = "0.8"
-once_cell = "1"
-thiserror = "1"
+itertools = "0.9.0"
+once_cell = "1.3.1"
+thiserror = "1.0.14"
