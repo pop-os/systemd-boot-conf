@@ -7,8 +7,6 @@ use std::path::Path;
 pub enum EntryError {
     #[error("error reading line in entry file")]
     Line(#[source] io::Error),
-    #[error("linux field is missing")]
-    MissingLinux,
     #[error("title field is missing")]
     MisisngTitle,
     #[error("entry is not a file")]
@@ -75,10 +73,6 @@ impl Entry {
 
         if entry.title.is_empty() {
             return Err(EntryError::MisisngTitle);
-        }
-
-        if entry.linux.is_empty() {
-            return Err(EntryError::MissingLinux);
         }
 
         Ok(entry)
